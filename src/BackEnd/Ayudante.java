@@ -12,6 +12,7 @@ package BackEnd;
 class Ayudante {
     private EstadoAyudante estado; 
     private double tiempoOcioso;
+    private double tiempoTrabajando;
 
     public Ayudante() {
         this.estado=EstadoAyudante.OCIO;
@@ -37,9 +38,14 @@ class Ayudante {
             this. estado = EstadoAyudante.TRABAJANDO;
         }
     }
-
-    public void setTiempoOcioso(double tiempoOcioso) {
-        this.tiempoOcioso = tiempoOcioso;
+        public double getTiempoTrabajando() {
+        return tiempoTrabajando;
+    }
+    public void addTiempoTrabajando(double tiempoTrabajando) {
+        this.tiempoTrabajando += tiempoTrabajando;
+    }
+    public void addTiempoOcioso(double tiempoOcioso) {
+        this.tiempoOcioso += tiempoOcioso;
     }
     
 }

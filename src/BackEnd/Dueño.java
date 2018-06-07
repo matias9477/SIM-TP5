@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Dueño {
     private Cola cola;
     private EstadoDueño estado;
-    private double tiempoTotal;
+    private double tiempoCocina;
     private double tiempoEnMostrador;
 
 
@@ -22,7 +22,7 @@ public class Dueño {
     public Dueño() {
         this.cola = new Cola();
         this.estado=estado.LIBRE;
-        this.tiempoTotal = 0;
+        this.tiempoCocina = 0;
         this.tiempoEnMostrador = 0;
     }
     
@@ -31,11 +31,22 @@ public class Dueño {
     public Cola getCola() {
         return cola;
     }
-
+    
     public void setCola(Cola cola) {
         this.cola = cola;
     }
-
+    
+    public void setEstado(int i){
+        if(i==0){
+            this.estado=estado.ATENDIENDO;
+        }else{
+            if(i==1){
+                this.estado=estado.EN_COCINA;
+            }else{
+                this.estado=estado.LIBRE;
+            }
+        }
+    }
     public EstadoDueño getEstado() {
         return this.estado;
     }
@@ -51,34 +62,40 @@ public class Dueño {
         }
         return false;
     }
-    
+//    public void addTiempoTotal(double tiempoTotal){
+//        this.tiempoTotal+=tiempoTotal;
+//    }
     public boolean atender()
     {
         
      return false;   
     }
     
-    public double calcularTiempoEnCocina(){
-        return (this.tiempoTotal-this.tiempoEnMostrador);
-    }
-
-    public double getTiempoTotal() {
-        return tiempoTotal;
-    }
-
-    public void setTiempoTotal(double tiempoTotal) {
-        this.tiempoTotal = tiempoTotal;
-    }
+//    public double calcularTiempoEnCocina(){
+//        return (this.tiempoTotal-this.tiempoEnMostrador);
+//    }
+//
+//    public double getTiempoTotal() {
+//        return tiempoTotal;
+//    }
+//
+//    public void setTiempoTotal(double tiempoTotal) {
+//        this.tiempoTotal = tiempoTotal;
+//    }
 
     public double getTiempoEnMostrador() {
         return tiempoEnMostrador;
     }
 
-    public void setTiempoEnMostrador(double tiempoEnMostrador) {
-        this.tiempoEnMostrador = tiempoEnMostrador;
+    public void addTiempoEnMostrador(double tiempoEnMostrador) {
+        this.tiempoEnMostrador += tiempoEnMostrador;
     }
-
-
+public void addTiempoCocina(double tiempoCocina) {
+        this.tiempoCocina += tiempoCocina;
+    }
+public double getTiempoCocina() {
+        return tiempoCocina;
+    }
 
     
     
