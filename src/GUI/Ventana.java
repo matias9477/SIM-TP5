@@ -36,19 +36,21 @@ public class Ventana extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnSimular = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         txtIteraciones = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        txtTiempoOcioso = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Cantidad de Iteraciones");
 
-        jButton1.setText("Simular");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSimular.setText("Simular");
+        btnSimular.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSimularActionPerformed(evt);
             }
         });
 
@@ -57,7 +59,7 @@ public class Ventana extends javax.swing.JFrame {
 
             },
             new String [] {
-                "reloj", "Evento", "RND llegada cliente", "Tentrellegada", "Prox llegada", "RND compra", "Compra realiz", "RND t atenc", "t atencion", "Fin aten", "RND t prep", "t prep", "Fin prep", "EstadoDueñ", "Cola", "estado ayudante", "t ocioso A", "t cocina D", "t mostrador D"
+                "reloj", "Evento", "RND", "T. Entre Llegadas", "Prox, Llegada", "RND", "Tipo", "RND", "Tiempo Atencion", "Fin Atencion", "Tiempo", "Fin Transmision", "RND", "T. Preparacion", "Fin Preparacion", "Estado", "Cola", "Tiempo en Mostrador", "Tiempo en Cocina", "Estado", "Tiempo Trabajando", "Tiempo Libre"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -68,6 +70,8 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("Porcentaje de Tiempo Ocioso del Ayudante");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -77,7 +81,7 @@ public class Ventana extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1))
+                        .addComponent(btnSimular))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -87,6 +91,12 @@ public class Ventana extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1169, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 23, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTiempoOcioso, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,23 +107,29 @@ public class Ventana extends javax.swing.JFrame {
                     .addComponent(txtIteraciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtTiempoOcioso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addComponent(btnSimular)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-               DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
-       model.setRowCount(0);
+    private void btnSimularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularActionPerformed
+        this.g.limpiarVectores();
+        DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
+        model.setRowCount(0);
         for (int i = 0; i < Integer.parseInt(this.txtIteraciones.getText()); i++) {
             this.g.newVectorActual();
-        this.addRowToJTable();
+            this.addRowToJTable();
         }
+        this.txtTiempoOcioso.setText(Double.toString(this.g.getTiempoOcioso()));
               
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSimularActionPerformed
 
     private void txtIteracionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIteracionesActionPerformed
         // TODO add your handling code here:
@@ -129,7 +145,7 @@ public class Ventana extends javax.swing.JFrame {
         
         DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
         ArrayList list =this.g.crearArrayList();
-        Object rowData[] = new Object[28];
+        Object rowData[] = new Object[22];
 
             
             rowData[0]=list.get(0);
@@ -151,17 +167,24 @@ public class Ventana extends javax.swing.JFrame {
             rowData[16]=list.get(16);
             rowData[17]=list.get(17);
             rowData[18]=list.get(18);
+            rowData[19]=list.get(19);
+            rowData[20]=list.get(20);
+            rowData[21]=list.get(21);
             
+            
+                        
 
             
             model.addRow(rowData);
         
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnSimular;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField txtIteraciones;
+    private javax.swing.JTextField txtTiempoOcioso;
     // End of variables declaration//GEN-END:variables
 }

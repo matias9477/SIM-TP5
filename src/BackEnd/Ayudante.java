@@ -31,12 +31,8 @@ class Ayudante {
     public double getTiempoOcioso() {
         return tiempoOcioso;
     }
-    public void setEstado(int i){
-        if(i ==0){
-            this.estado = EstadoAyudante.OCIO;
-        }else{
-            this. estado = EstadoAyudante.TRABAJANDO;
-        }
+    public void setEstado(EstadoAyudante i){
+        this.estado=i;
     }
         public double getTiempoTrabajando() {
         return tiempoTrabajando;

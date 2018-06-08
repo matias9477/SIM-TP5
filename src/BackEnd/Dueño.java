@@ -36,16 +36,8 @@ public class Dueño {
         this.cola = cola;
     }
     
-    public void setEstado(int i){
-        if(i==0){
-            this.estado=estado.ATENDIENDO;
-        }else{
-            if(i==1){
-                this.estado=estado.EN_COCINA;
-            }else{
-                this.estado=estado.LIBRE;
-            }
-        }
+    public void setEstado(EstadoDueño i){
+        this.estado=i;
     }
     public EstadoDueño getEstado() {
         return this.estado;

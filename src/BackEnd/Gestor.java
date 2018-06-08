@@ -20,11 +20,15 @@ public class Gestor {
     
 
     public Gestor() {
-        this.vectorActual=new Object[21];
+        this.vectorActual=new Object[22];
         this.vectorAnterior = null;
         this.dueño = new Dueño();
         this.ayudante = new Ayudante();
 
+    }
+    public double getTiempoOcioso()
+    {
+        return this.ayudante.getTiempoOcioso();
     }
 
     public Object[] getVectorActual() {
@@ -42,6 +46,14 @@ public class Gestor {
             }
         }
         return a;
+    }
+    
+    public void limpiarVectores()
+    {
+        this.vectorActual=new Object[22];
+        this.vectorAnterior = null;
+        this.dueño = new Dueño();
+        this.ayudante = new Ayudante();
     }
    
     public void newVectorActual() {
@@ -67,13 +79,12 @@ public class Gestor {
             vectorActual[17] = this.dueño.getTiempoEnMostrador();
             vectorActual[18] = this.dueño.getTiempoCocina();
             vectorActual[19] = this.ayudante.getEstado();
-            vectorActual[20] = null;
-            vectorActual[21] = Double.valueOf(vectorActual[0].toString()) - this.ayudante.getTiempoOcioso();
-            vectorActual[22] = this.ayudante.getTiempoOcioso();
+            vectorActual[20] = this.ayudante.getTiempoTrabajando();
+            vectorActual[21] = this.ayudante.getTiempoOcioso();
             this.vectorAnterior = this.vectorActual;          
         } else {//NO ES EL PRIMERO
             if (calcularProxEvento() == 0) {//PROXIMA LLEGADA?
-                if (Double.valueOf(vectorAnterior[16].toString()) != 0) {//HAY GENTE ESPERANDO SER ATENDIDA?
+                if (this.dueño.getCola().genteEnCola() != 0) {//HAY GENTE ESPERANDO SER ATENDIDA?
                     vectorActual[0] = this.vectorAnterior[4];
                     vectorActual[1] = "LLEGADA CLIENTE";
                     Cliente c = new Cliente(Double.valueOf(vectorActual[0].toString()));
@@ -91,17 +102,16 @@ public class Gestor {
                     vectorActual[12] = null;
                     vectorActual[13] = null;
                     vectorActual[14] = vectorAnterior[14];
-                    dueño.setEstado(0); //SETEO DUEÑO ATENDIENDO
+                    dueño.setEstado(EstadoDueño.ATENDIENDO); //SETEO DUEÑO ATENDIENDO
                     vectorActual[15] = this.dueño.getEstado();
                     vectorActual[16] = this.dueño.getCola().genteEnCola(); //YA AGREGUE ANTES EL CLIENTE A LA COLA, EL SIZE ESTA ACTUALIADO                    
                     vectorActual[17] = this.dueño.getTiempoEnMostrador();
                     vectorActual[18] = this.dueño.getTiempoCocina();
                     vectorActual[19] = this.ayudante.getEstado();
-                    vectorActual[20] = 0;
-                    vectorActual[21] = Double.valueOf(vectorActual[0].toString()) - this.ayudante.getTiempoOcioso();
-                    vectorActual[22] = this.ayudante.getTiempoOcioso();
+                    vectorActual[20] = this.ayudante.getTiempoTrabajando();
+                    vectorActual[21] = this.ayudante.getTiempoOcioso();
                     this.vectorAnterior = this.vectorActual;                    
-                } else {
+                } else { //NO HAY GENTE ESPERANDO SER ATENDIDA
                     vectorActual[0] = this.vectorAnterior[4];
                     vectorActual[1] = "LLEGADA CLIENTE";
                     Cliente c = new Cliente(Double.valueOf(vectorActual[0].toString()));
@@ -112,49 +122,65 @@ public class Gestor {
                     vectorActual[5] = Math.random();//calculo el tipo de compra
                     if (Double.valueOf(vectorActual[5].toString()) < 0.8) {//TIPO DE COMPRA?
                         vectorActual[6] = 0;//NO ES COMIDA
-                    } else {
-                        vectorActual[6] = 1;//ES COMIDA
-                    }
-                    if (Double.valueOf(vectorActual[6].toString()) == 0) {//CUANTO TARDA EN ATENDER?
                         vectorActual[7] = Math.random();
                         vectorActual[8] = 0.5 + Double.valueOf(vectorActual[7].toString()) * 1.5;
                         vectorActual[9] = Double.valueOf(vectorActual[8].toString()) + Double.valueOf(vectorActual[0].toString());
-                        this.dueño.addTiempoEnMostrador(Double.valueOf(vectorActual[9].toString())-Double.valueOf(vectorActual[0].toString()));//AGREGO TIEMPO ATENCION
+                        this.dueño.addTiempoEnMostrador(Double.valueOf(vectorActual[8].toString()));//AGREGO TIEMPO ATENCION
                         vectorActual[10] = null;
-                        vectorActual[11] = null;
+                        vectorActual[11] = null;                        
                     } else {
+                        vectorActual[6] = 1;//ES COMIDA
                         vectorActual[7] = null;
                         vectorActual[8] = null;
                         vectorActual[9] = null;
                         vectorActual[10] = 0.1;
-                        vectorActual[11] = Double.valueOf(vectorActual[10].toString()) + Double.valueOf(vectorActual[0].toString());
+                        vectorActual[11] = 0.1 + Double.valueOf(vectorActual[0].toString());
                         this.dueño.addTiempoEnMostrador(0.1);//AGREGO TIEMPO ANTENCION
-                    }
+                    }                    
                     vectorActual[12] = null;
                     vectorActual[13] = null;
-                    vectorActual[14] = vectorAnterior[14];//mantiene el tiempo anterior que no fue menor (FIN PREPARACION)
-                    dueño.setEstado(0); //SETEO DUEÑO ATENDIENDO
+                    vectorActual[14] = vectorAnterior[14];//mantiene el tiempo anterior que no fue menor (FIN PREPARACION)                    
+                    dueño.setEstado(EstadoDueño.ATENDIENDO);//SETEO DUEÑO ATENDIENDO
+                    vectorActual[15] = this.dueño.getEstado();
+                    vectorActual[16] = this.dueño.getCola().genteEnCola();
+                    vectorActual[17] = this.dueño.getTiempoEnMostrador();
+                    this.dueño.addTiempoCocina(Double.valueOf(vectorActual[0].toString())-this.dueño.getTiempoEnMostrador());
+                    vectorActual[18] = this.dueño.getTiempoCocina();
+                    if(vectorAnterior[19]!=EstadoAyudante.TRABAJANDO){
+                    ayudante.setEstado(EstadoAyudante.OCIO);
+                    }
+                    vectorActual[19] = this.ayudante.getEstado();                               
+                    this.ayudante.addTiempoTrabajando(Double.valueOf(vectorActual[0].toString()) - this.ayudante.getTiempoOcioso());//AGREGO TIEMPO TRABAJANDO
+                    vectorActual[20] = this.ayudante.getTiempoTrabajando();
+                    vectorActual[21] = this.ayudante.getTiempoOcioso();
+                    this.vectorAnterior = this.vectorActual;
+                }
+            } else {//NO ES PROXIMA LLEGADA
+                if (calcularProxEvento() == 1) {//FIN ATENCION?
+                    vectorActual[0] = vectorAnterior[9];
+                    vectorActual[1] = "FIN ATENCION";
+                    vectorActual[2] = null;
+                    vectorActual[3] = null;
+                    vectorActual[4] = vectorAnterior[4];
+                    vectorActual[5] = null;
+                    vectorActual[6] = null;
+                    vectorActual[7] = null;
+                    vectorActual[8] = null;
+                    vectorActual[9] = null;
+                    vectorActual[10] = null;
+                    vectorActual[11] = null;
+                    vectorActual[12] = null;
+                    vectorActual[13] = null;
+                    vectorActual[14] = null;
+                    this.dueño.setEstado(EstadoDueño.LIBRE);
                     vectorActual[15] = this.dueño.getEstado();
                     vectorActual[16] = this.dueño.getCola().genteEnCola();
                     vectorActual[17] = this.dueño.getTiempoEnMostrador();
                     vectorActual[18] = this.dueño.getTiempoCocina();
-                    if(Double.valueOf(vectorActual[14].toString())>Double.valueOf(vectorActual[0].toString())){
-                        ayudante.setEstado(1);
-                    }else{
-                        ayudante.setEstado(0);
-                        this.ayudante.addTiempoOcioso(Double.valueOf(vectorActual[0].toString()));//AGREGO TIEMPO OCIOSO
-                    }
                     vectorActual[19] = this.ayudante.getEstado();
-                    vectorActual[20] = 0;
-                    
-                    this.ayudante.addTiempoTrabajando(Double.valueOf(vectorActual[0].toString()) - this.ayudante.getTiempoOcioso());//AGREGO TIEMPO TRABAJANDO
-                    vectorActual[21] = this.ayudante.getTiempoTrabajando();
-                    vectorActual[22] = this.ayudante.getTiempoOcioso();
-                    this.vectorAnterior = this.vectorActual;                    
-                }
-            } else {//NO ES PROXIMA LLEGADA
-                if (calcularProxEvento() == 1) {//FIN ATENCION?
-               
+                    vectorActual[20] = this.ayudante.getTiempoTrabajando();
+                    vectorActual[21] = this.ayudante.getTiempoOcioso();
+                    this.vectorAnterior = this.vectorActual;
                 } else {//NO ES FIN  ATENCION
                     if (calcularProxEvento() == 2) {//FIN TRANSMISION?
                         vectorActual[0] = vectorAnterior[11];
@@ -172,33 +198,51 @@ public class Gestor {
                         vectorActual[12] = Math.random();
                         vectorActual[13] = 5 + Double.valueOf(vectorActual[12].toString()) * 5;
                         vectorActual[14] = Double.valueOf(vectorActual[0].toString()) + Double.valueOf(vectorActual[13].toString());
-                        this.dueño.setEstado(2);//SETEO EL DUEÑO COMO LIBRE
+                        this.dueño.setEstado(EstadoDueño.LIBRE);//SETEO EL DUEÑO COMO LIBRE
                         vectorActual[15] = this.dueño.getEstado();
                         this.dueño.getCola().avanzar();//YA TERMINE DE ATENDER UN CLIENTE
                         vectorActual[16] = this.dueño.getCola().genteEnCola();
                         vectorActual[17] = this.dueño.getTiempoEnMostrador();
                         vectorActual[18] = this.dueño.getTiempoCocina();
-                        this.ayudante.setEstado(1);//EL AYUDANTE PASA A TRABAJAR
-                        vectorActual[19] = this.ayudante.getEstado();
-                        vectorActual[20] = 0;
+                        this.ayudante.setEstado(EstadoAyudante.TRABAJANDO);//EL AYUDANTE PASA A TRABAJAR
+                        vectorActual[19] = this.ayudante.getEstado();                      
                         if (this.dueño.getEstado() == EstadoDueño.LIBRE && this.dueño.getCola().estaVacia()) {//SI EL JEFE ESTA LIBRE Y NO HAY NADIE ESPERANDO SER ATENDIDO
-                            this.dueño.setEstado(1);//EL JEFE PASA A COCINA
+                            this.dueño.setEstado(EstadoDueño.EN_COCINA);//EL JEFE PASA A COCINA
                             vectorActual[13] = Double.valueOf(vectorActual[13].toString()) / 2;//EL TIEMPO PASA A SER LA MITAD
                             vectorActual[14] = Double.valueOf(vectorActual[0].toString()) + Double.valueOf(vectorActual[13].toString());
                             vectorActual[15] = this.dueño.getEstado();
-                            if(Double.valueOf(vectorActual[4].toString())<Double.valueOf(vectorActual[14].toString())){//SI MIENTRAS ESTA EN COCINA LLEGA ALGUIEN
-                            this.dueño.addTiempoCocina(Double.valueOf(vectorActual[4].toString())-Double.valueOf(vectorActual[0].toString()));
-                            vectorActual[18] = this.dueño.getTiempoCocina();
-                            }
-                            this.dueño.addTiempoCocina(Double.valueOf(vectorActual[14].toString())-Double.valueOf(vectorActual[0].toString()));
                         }
                         this.ayudante.addTiempoTrabajando(Double.valueOf(vectorActual[14].toString()) - Double.valueOf(vectorActual[0].toString()));//AGREGO TIEMPO TRABAJANDO AYUDANTE                            
-                        vectorActual[21] = this.ayudante.getTiempoTrabajando();
-                        vectorActual[22] = this.ayudante.getTiempoOcioso();
-                        this.vectorAnterior = this.vectorActual;                        
+                        vectorActual[20] = this.ayudante.getTiempoTrabajando();
+                        this.ayudante.addTiempoOcioso(Double.valueOf(vectorActual[0].toString()) - this.ayudante.getTiempoTrabajando());
+                        vectorActual[21] = this.ayudante.getTiempoOcioso();
+                        this.vectorAnterior = this.vectorActual;
                     } else {//NO ES FIN TRANSMISION
                         //ES FIN PREPARACION
-
+                        vectorActual[0] = 0.0;
+                        vectorActual[1] = "FIN PREPARACION";
+                        vectorActual[2] = null;
+                        vectorActual[3] = null;
+                        vectorActual[4] = vectorAnterior[4];
+                        vectorActual[5] = null;
+                        vectorActual[6] = null;
+                        vectorActual[7] = null;
+                        vectorActual[8] = null;
+                        vectorActual[9] = vectorAnterior[9];
+                        vectorActual[10] = null;
+                        vectorActual[11] = null;
+                        vectorActual[12] = null;
+                        vectorActual[13] = null;
+                        vectorActual[14] = null;
+                        vectorActual[15] = this.dueño.getEstado();
+                        vectorActual[16] = this.dueño.getCola().genteEnCola();
+                        vectorActual[17] = this.dueño.getTiempoEnMostrador();
+                        vectorActual[18] = this.dueño.getTiempoCocina();
+                        this.ayudante.setEstado(EstadoAyudante.OCIO);
+                        vectorActual[19] = this.ayudante.getEstado();
+                        vectorActual[20] = this.ayudante.getTiempoTrabajando();
+                        vectorActual[21] = this.ayudante.getTiempoOcioso();
+                        this.vectorAnterior = this.vectorActual;
                     }
                 }
             }
@@ -206,13 +250,50 @@ public class Gestor {
     }
 
     private int calcularProxEvento() {
-        if (Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[9].toString()) && Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[11].toString()) && Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[11].toString())) {
+        
+        double cuatro;
+        double nueve;
+        double once;
+        double catorce;
+        if (this.vectorAnterior[4]==null) {
+            cuatro=100000000;
+        }
+        else
+        {
+         cuatro=Double.valueOf(this.vectorAnterior[4].toString());   
+        }
+        
+                if (this.vectorAnterior[9]==null) {
+            nueve=100000000;
+        }
+        else
+        {
+         nueve=Double.valueOf(this.vectorAnterior[9].toString());   
+        }
+                
+                        if (this.vectorAnterior[11]==null) {
+            once=100000000;
+        }
+        else
+        {
+         once=Double.valueOf(this.vectorAnterior[11].toString());   
+        }
+                                if (this.vectorAnterior[14]==null) {
+            catorce=100000000;
+        }
+        else
+        {
+         catorce=Double.valueOf(this.vectorAnterior[14].toString());   
+        }
+        
+        
+                if (cuatro < nueve && cuatro < once && cuatro < once) {
             return 0; //PROXIMA LLEGADA
         } else {
-            if(Double.valueOf(this.vectorAnterior[9].toString()) < Double.valueOf(this.vectorAnterior[11].toString()) && Double.valueOf(this.vectorAnterior[9].toString()) < Double.valueOf(this.vectorAnterior[14].toString())){
+            if(nueve < once && nueve < 14){
                 return 1;//FIN ATENCION
             }else{
-                if(Double.valueOf(this.vectorAnterior[11].toString()) < Double.valueOf(this.vectorAnterior[14].toString())){
+                if(once < catorce){
                     return 2;//FIN TRANSMISION
                 }else{
                     return 3;//FIN PREPARACION
@@ -220,6 +301,21 @@ public class Gestor {
             }
         }
     }
+        
+//        if (Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[9].toString()) && Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[11].toString()) && Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[11].toString())) {
+//            return 0; //PROXIMA LLEGADA
+//        } else {
+//            if(Double.valueOf(this.vectorAnterior[9].toString()) < Double.valueOf(this.vectorAnterior[11].toString()) && Double.valueOf(this.vectorAnterior[9].toString()) < Double.valueOf(this.vectorAnterior[14].toString())){
+//                return 1;//FIN ATENCION
+//            }else{
+//                if(Double.valueOf(this.vectorAnterior[11].toString()) < Double.valueOf(this.vectorAnterior[14].toString())){
+//                    return 2;//FIN TRANSMISION
+//                }else{
+//                    return 3;//FIN PREPARACION
+//                }
+//            }
+//        }
+//    }
     /*
     public void newVectorActual()
     {
