@@ -12,30 +12,30 @@ import java.util.LinkedList;
  * @author matia
  */
 public class Cola {
-    private LinkedList<Cliente> cola;
+    private int cola;
 
     public Cola() {
-        cola = new LinkedList<Cliente>();
+        cola = 0;
     }
     
     public boolean estaVacia(){
-        return this.cola.isEmpty();
+        if(cola==0){
+            return true;
+        }
+        return false;
     }
     
-    public void agregar(Cliente c){
-        cola.addLast(c);
+    public void agregar(){
+        cola++;
     }
     
-    public Cliente avanzar(){
-        return cola.removeFirst();
+    public void avanzar(){
+         cola--;
     }
     
     public int genteEnCola(){
-        return cola.size();
+        return cola;
     }
     
-    public Cliente get(int index)
-    {
-        return cola.get(index);
-    }
+ 
 }

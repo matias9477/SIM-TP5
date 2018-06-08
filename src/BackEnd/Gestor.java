@@ -83,8 +83,8 @@ public class Gestor {
             vectorActual[21] = this.ayudante.getTiempoOcioso();
             this.vectorAnterior = this.vectorActual;
         } else {//NO ES EL PRIMERO
-            if (this.dueño.getEstado() == EstadoDueño.LIBRE && this.dueño.getCola().genteEnCola() > 0 && Double.valueOf(vectorActual[0].toString()) < Double.valueOf(vectorAnterior[4].toString())) {//ATIENDE AL QUE ESTA EN COLA PERO NO CALCULA LA PROXIMA LLEGADA PORQUE YA CALCULO ANTES
-                vectorActual[0] = 0.0;
+            if (this.dueño.getEstado() == EstadoDueño.LIBRE && this.dueño.getCola().genteEnCola() > 0 && Double.valueOf(vectorAnterior[0].toString()) < Double.valueOf(vectorAnterior[4].toString())) {//ATIENDE AL QUE ESTA EN COLA PERO NO CALCULA LA PROXIMA LLEGADA PORQUE YA CALCULO ANTES
+                vectorActual[0]=vectorAnterior[0];
                 vectorActual[1] = "LLEGADA CLIENTE";
                 vectorActual[2] = null;
                 vectorActual[3] = null;
@@ -112,7 +112,6 @@ public class Gestor {
                 vectorActual[14] = null;
                 this.dueño.setEstado(EstadoDueño.ATENDIENDO);
                 vectorActual[15] = this.dueño.getEstado();
-                this.dueño.getCola().avanzar();
                 vectorActual[16] = this.dueño.getCola().genteEnCola();
                 vectorActual[17] = this.dueño.getTiempoEnMostrador();
                 vectorActual[18] = this.dueño.getTiempoCocina();
@@ -120,13 +119,13 @@ public class Gestor {
                 vectorActual[20] = this.ayudante.getTiempoTrabajando();
                 vectorActual[21] = this.ayudante.getTiempoOcioso();
                 this.vectorAnterior = this.vectorActual;
-            }
+            }else{
             if (calcularProxEvento() == 0) {//PROXIMA LLEGADA?
                 if (this.dueño.getCola().genteEnCola() != 0) {//HAY GENTE ESPERANDO SER ATENDIDA?
                     vectorActual[0] = this.vectorAnterior[4];
                     vectorActual[1] = "LLEGADA CLIENTE";
                     Cliente c = new Cliente(Double.valueOf(vectorActual[0].toString()));
-                    this.dueño.getCola().agregar(c); //AGREGO EL CLIENTE A LA COLA DEL DUEÑO
+                    this.dueño.getCola().agregar(); //AGREGO EL CLIENTE A LA COLA DEL DUEÑO
                     vectorActual[2] = Math.random();//calculo proxima llegada
                     vectorActual[3] = (-5) * Math.log(1 - Double.valueOf(vectorActual[2].toString()));
                     vectorActual[4] = Double.valueOf(vectorActual[3].toString()) + Double.valueOf(vectorActual[0].toString());
@@ -153,7 +152,7 @@ public class Gestor {
                     vectorActual[0] = this.vectorAnterior[4];
                     vectorActual[1] = "LLEGADA CLIENTE";
                     Cliente c = new Cliente(Double.valueOf(vectorActual[0].toString()));
-                    this.dueño.getCola().agregar(c); //AGREGO EL CLIENTE A LA COLA DEL DUEÑO                   
+                    this.dueño.getCola().agregar(); //AGREGO EL CLIENTE A LA COLA DEL DUEÑO                   
                     vectorActual[2] = Math.random();//calculo proxima llegada
                     vectorActual[3] = (-5) * Math.log(1 - Double.valueOf(vectorActual[2].toString()));
                     vectorActual[4] = Double.valueOf(vectorActual[3].toString()) + Double.valueOf(vectorActual[0].toString());
@@ -251,7 +250,9 @@ public class Gestor {
                             vectorActual[13] = Double.valueOf(vectorActual[13].toString()) / 2;//EL TIEMPO PASA A SER LA MITAD
                             vectorActual[14] = Double.valueOf(vectorActual[0].toString()) + Double.valueOf(vectorActual[13].toString());
                             vectorActual[15] = this.dueño.getEstado();
+                            this.dueño.addTiempoCocina(Double.valueOf(vectorActual[0].toString()) - Double.valueOf(vectorActual[17].toString()));
                         }
+                        
                         this.ayudante.addTiempoTrabajando(Double.valueOf(vectorActual[14].toString()) - Double.valueOf(vectorActual[0].toString()));//AGREGO TIEMPO TRABAJANDO AYUDANTE                            
                         vectorActual[20] = this.ayudante.getTiempoTrabajando();
                         this.ayudante.addTiempoOcioso(Double.valueOf(vectorActual[0].toString()) - this.ayudante.getTiempoTrabajando());
@@ -259,7 +260,7 @@ public class Gestor {
                         this.vectorAnterior = this.vectorActual;
                     } else {//NO ES FIN TRANSMISION
                         //ES FIN PREPARACION
-                        vectorActual[0] = 0.0;
+                        vectorActual[0] = vectorAnterior[14];
                         vectorActual[1] = "FIN PREPARACION";
                         vectorActual[2] = null;
                         vectorActual[3] = null;
@@ -287,6 +288,7 @@ public class Gestor {
                 }
             }
         }
+        }
     }
 
     private int calcularProxEvento() {
@@ -295,53 +297,44 @@ public class Gestor {
         double nueve;
         double once;
         double catorce;
-        if (this.vectorAnterior[4]==null) {
-            cuatro=100000000;
+        if (this.vectorAnterior[4] == null) {
+            cuatro = 100000000;
+        } else {
+            cuatro = Double.valueOf(this.vectorAnterior[4].toString());
         }
-        else
-        {
-         cuatro=Double.valueOf(this.vectorAnterior[4].toString());   
+
+        if (this.vectorAnterior[9] == null) {
+            nueve = 100000000;
+        } else {
+            nueve = Double.valueOf(this.vectorAnterior[9].toString());
         }
-        
-                if (this.vectorAnterior[9]==null) {
-            nueve=100000000;
+
+        if (this.vectorAnterior[11] == null) {
+            once = 100000000;
+        } else {
+            once = Double.valueOf(this.vectorAnterior[11].toString());
         }
-        else
-        {
-         nueve=Double.valueOf(this.vectorAnterior[9].toString());   
+        if (this.vectorAnterior[14] == null) {
+            catorce = 100000000;
+        } else {
+            catorce = Double.valueOf(this.vectorAnterior[14].toString());
         }
-                
-                        if (this.vectorAnterior[11]==null) {
-            once=100000000;
-        }
-        else
-        {
-         once=Double.valueOf(this.vectorAnterior[11].toString());   
-        }
-                                if (this.vectorAnterior[14]==null) {
-            catorce=100000000;
-        }
-        else
-        {
-         catorce=Double.valueOf(this.vectorAnterior[14].toString());   
-        }
-        
-        
-                if (cuatro < nueve && cuatro < once && cuatro < once) {
+
+        if (cuatro < nueve && cuatro < once && cuatro < catorce) {
             return 0; //PROXIMA LLEGADA
         } else {
-            if(nueve < once && nueve < 14){
+            if (nueve < once && nueve < catorce) {
                 return 1;//FIN ATENCION
-            }else{
-                if(once < catorce){
+            } else {
+                if (once < catorce) {
                     return 2;//FIN TRANSMISION
-                }else{
+                } else {
                     return 3;//FIN PREPARACION
                 }
             }
         }
     }
-        
+
 //        if (Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[9].toString()) && Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[11].toString()) && Double.valueOf(this.vectorAnterior[4].toString()) < Double.valueOf(this.vectorAnterior[11].toString())) {
 //            return 0; //PROXIMA LLEGADA
 //        } else {
