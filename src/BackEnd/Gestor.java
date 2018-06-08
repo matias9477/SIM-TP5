@@ -90,7 +90,7 @@ public class Gestor {
                 vectorActual[3] = null;
                 vectorActual[4] = vectorAnterior[4];
                 vectorActual[5] = Math.random();
-                if (Double.valueOf(vectorActual[5].toString()) < 0.8) {//TIPO DE COMPRA?
+                if (Double.valueOf(vectorActual[5].toString()) < 0.8) {//TIPO DE COMPRA? 
                         vectorActual[6] = 0;//NO ES COMIDA
                         vectorActual[7] = Math.random();
                         vectorActual[8] = 0.5 + Double.valueOf(vectorActual[7].toString()) * 1.5;

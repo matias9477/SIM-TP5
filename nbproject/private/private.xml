@@ -3,10 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/Users/valter/Desktop/SIM/SIM-TP5/src/BackEnd/Ayudante.java</file>
             <file>file:/Users/valter/Desktop/SIM/SIM-TP5/src/GUI/Ventana.java</file>
             <file>file:/Users/valter/Desktop/SIM/SIM-TP5/src/BackEnd/Dueño.java</file>
             <file>file:/Users/valter/Desktop/SIM/SIM-TP5/src/BackEnd/Gestor.java</file>
+=======
+            <file>file:/C:/Users/Dani/Documents/NetBeansProjects/SIM-TP5/src/BackEnd/Dueño.java</file>
+            <file>file:/C:/Users/Dani/Documents/NetBeansProjects/SIM-TP5/src/GUI/Ventana.java</file>
+            <file>file:/C:/Users/Dani/Documents/NetBeansProjects/SIM-TP5/src/BackEnd/Gestor.java</file>
+            <file>file:/C:/Users/Dani/Documents/NetBeansProjects/SIM-TP5/src/BackEnd/Main.java</file>
+            <file>file:/C:/Users/Dani/Documents/NetBeansProjects/SIM-TP5/src/BackEnd/Cola.java</file>
+>>>>>>> 94191473322c46e5a80b6e71677e0986d7fbac35
         </group>
     </open-files>
 </project-private>
