@@ -138,10 +138,15 @@ public class Gestor {
                     vectorActual[16] = this.dueño.getCola().genteEnCola();
                     vectorActual[17] = this.dueño.getTiempoEnMostrador();
                     vectorActual[18] = this.dueño.getTiempoCocina();
-                    ayudante.setEstado(0);
+                    if(Double.valueOf(vectorActual[14].toString())>Double.valueOf(vectorActual[0].toString())){
+                        ayudante.setEstado(1);
+                    }else{
+                        ayudante.setEstado(0);
+                        this.ayudante.addTiempoOcioso(Double.valueOf(vectorActual[0].toString()));//AGREGO TIEMPO OCIOSO
+                    }
                     vectorActual[19] = this.ayudante.getEstado();
                     vectorActual[20] = 0;
-                    this.ayudante.addTiempoOcioso(Double.valueOf(vectorActual[0].toString()));//AGREGO TIEMPO OCIOSO
+                    
                     this.ayudante.addTiempoTrabajando(Double.valueOf(vectorActual[0].toString()) - this.ayudante.getTiempoOcioso());//AGREGO TIEMPO TRABAJANDO
                     vectorActual[21] = this.ayudante.getTiempoTrabajando();
                     vectorActual[22] = this.ayudante.getTiempoOcioso();
